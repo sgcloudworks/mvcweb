@@ -1,0 +1,594 @@
+`<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prep At Home</title>
+<link rel="shortcut icon" href="prepathome.png" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="test7.js"></script>
+<script type="text/javascript">
+
+alert("Welcome to PrepAtHome web interface. \n PrepAtHome is now accessible over internet. \n Two modes of preparation available a)Read Through b)Take Exam mode");
+
+var readOnlyMode = false;
+var testMode = false;
+
+var test1QuestionsData = [];
+var test1Counter = 0;
+
+var test2QuestionsData = [];
+var test2Counter = 0;
+
+var test3QuestionsData = [];
+var test3Counter = 0;
+
+var test4QuestionsData = [];
+var test4Counter = 0;
+
+var test5QuestionsData = [];
+var test5Counter = 0;
+
+var test6QuestionsData = [];
+var test6Counter = 0;
+
+var test7QuestionsData = [];
+var test7Counter = 0;
+
+
+var test8EngQuestionsDataCache = [];
+var test8LatinQuestionsDataCache = [];
+
+var optedLanguageId=1;
+
+$('#progressBartest1').hide();
+$('#progressBartest2').hide();
+$('#progressBartest3').hide();
+$('#progressBartest4').hide();
+$('#progressBartest5').hide();
+$('#progressBartest6').hide();
+$('#progressBartest7').hide();
+
+function setLanguage(languageId){
+	
+	test1Counter = 0;
+	  test2Counter = 0;
+	  test3Counter = 0;
+	  test4Counter = 0;
+	  test5Counter = 0;
+	  test6Counter = 0;
+	  test7Counter = 0;
+	  
+	  test1QuestionsData = [];
+	  test2QuestionsData = [];
+	  test3QuestionsData = [];
+	  test4QuestionsData = [];
+	  test5QuestionsData = [];
+	  test6QuestionsData = [];
+	  test7QuestionsData = [];
+	
+	if(languageId==2){
+		optedLanguageId = 2;
+		$('#englishRadio')[0].checked = false;
+		$('#latinRadio')[0].checked = true;
+	} else {
+		optedLanguageId = 1;
+		$('#latinRadio')[0].checked = false;
+		$('#englishRadio')[0].checked = true;
+	}
+}
+
+function setMode(modeSet){
+	
+	  test1Counter = 0;
+	  test2Counter = 0;
+	  test3Counter = 0;
+	  test4Counter = 0;
+	  test5Counter = 0;
+	  test6Counter = 0;
+	  test7Counter = 0;
+	  
+	  test1QuestionsData = [];
+	  test2QuestionsData = [];
+	  test3QuestionsData = [];
+	  test4QuestionsData = [];
+	  test5QuestionsData = [];
+	  test6QuestionsData = [];
+	  test7QuestionsData = [];
+	  
+	  $('#next').show();
+	  
+	  if(modeSet == 'readOnlyMode') {
+		  readOnlyMode = true;
+		  testMode = false;
+		  
+		  $('#submittest1').hide();
+		  $('#submittest2').hide();
+		  $('#submittest3').hide();
+		  $('#submittest4').hide();
+		  $('#submittest5').hide();
+		  $('#submittest6').hide();
+		  $('#submittest7').hide();
+		  
+		  
+		 
+	  } if(modeSet == 'testMode') {
+		  testMode = true;
+		  readOnlyMode = false;
+		  
+		  $('#submittest1').show();
+		  $('#submittest2').show();
+		  $('#submittest3').show();
+		  $('#submittest4').show();
+		  $('#submittest5').show();
+		  $('#submittest6').show();
+		  $('#submittest7').show();
+	  }	  
+}
+function show_tab (tab_id) {
+	
+	Number.isFinite = Number.isFinite || function(value) {
+	    return typeof value === 'number' && isFinite(value);
+	}
+	
+	//$("#content").empty().html(data);
+		
+		
+		$('#progressBartest1').hide();
+		$('#progressBartest2').hide();
+		$('#progressBartest3').hide();
+		$('#progressBartest4').hide();
+		$('#progressBartest5').hide();
+		$('#progressBartest6').hide();
+		$('#progressBartest7').hide();
+		
+		if(readOnlyMode == testMode){
+			confirm("You must opt for either Read Through or Take Exam in Home Screen to proceed further!");
+			tab_id=-1;
+			window.location.href = '/mvcweb/HomePage.html';
+		}
+		$("#content").empty();
+		if(tab_id==0){
+        	$.get("home.html", function (data) {
+                $("#content").empty().html(data);
+
+    			//Disable full page
+    		    /*$("body").on("contextmenu",function(e){
+    		        return false;
+    		    });*/
+            });
+        }        
+        if(tab_id==1){ 
+        	
+        		if(testMode){
+        			alert("previous attempt's stats \n a) Success rate is "+localStorage.getItem('test1PassPercent') +"\n b) Failure rate is "+localStorage.getItem('test1FailurePercent'));
+        		}
+        		
+        		$.get("test111.html", function (data) {		
+        		   $.get("http://localhost:8080/mvcweb/getAllQNOptionsForATestAndLanguage?testId="+1+"&languageId="+optedLanguageId,function(data) {
+        		   		$(data).each(function(index) {
+        		   			test1QuestionsData[index] = data[index];        		   			
+        		   		});
+        		   		var questionNumber = test1Counter+1;
+        				
+        		   	   //append the new question        				
+        			   $('#question').append('<br/><b>Question<br/></br> #'+questionNumber + "/" +test1QuestionsData.length + ")</b>&nbsp;&nbsp;"+test1QuestionsData[0].question+'<br/> <br/> <b>Options</b>');
+        			   $('#qID').val(test1Counter);
+        			   
+        			   if(test1QuestionsData[0].firstQuestion == true){
+        				   $('#prev').hide();
+        				   $('#nextUnanswered').hide();
+        				   $('#prevUnanswered').hide();
+        			   }
+        			   $('#progressBartest1').hide();
+        			   if(testMode){
+        			   		$("#submittest1").show();
+        			   		$("#referenceQuestionsTest1").hide();
+            		   } if(readOnlyMode){
+            			   
+            			   $("#submittest1").hide();
+            		   }
+        			   var correctOptionId = Number(test1QuestionsData[0].correctAnswer);
+        			   	if(readOnlyMode){
+        					$("input[type=radio]").attr('disabled', true);
+        				   	$('#'+correctOptionId).prop('checked',true);
+        				   
+        				   	var referenceLinksArray = test1QuestionsData[0].referenceLink;
+    						   	var referenceLinks = referenceLinksArray.split(",");
+    							$("#refSection").addClass('glyphicon glyphicon-info-sign alert alert-info');   						
+    							$("#refSection").append('<b>To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+        			   	}
+        			   
+        			   $('#correctAnswer').val(test1QuestionsData[0].correctAnswer);
+        			   $('#referenceLink').val(test1QuestionsData[0].referenceLink);
+        			  
+        			   jQuery.each( test1QuestionsData[0].options, function( i, val ) {
+        				  $( "#radioLabel" + (i+1) ).text(val);        				  
+        				});	
+        			   $('#optionsContainer').show();
+        		  });
+                $("#content").empty().html(data);    		
+            });
+        }
+        if(tab_id==2){        	
+        	
+        		if(testMode){
+        			alert("previous attempt's stats \n a) Success rate is "+localStorage.getItem('test2PassPercent') +"\n b) Failure rate is "+localStorage.getItem('test2FailurePercent'));
+        		}
+        		
+        		$.get("test2.html", function (data) {		
+        		   	$.get("http://localhost:8080/mvcweb/getAllQNOptionsForATestAndLanguage?testId="+2+"&languageId="+optedLanguageId,function(data) {
+        		   		$(data).each(function(index) {
+        		   			test2QuestionsData[index] = data[index];        		   			
+        		   		});
+        		   		var questionNumber = test2Counter+1;
+        		   		
+        				//append the new question        				
+        			   $('#question').append('<br/><b>Question<br/></br> #'+questionNumber + "/" +test2QuestionsData.length + ")</b>&nbsp;&nbsp;"+data[0].question+'<br/> <br/> <b>Options</b>');
+        			   $('#qID').val(test2Counter);
+        			   
+        			   if(data[0].firstQuestion == true){
+        				   $('#prev').hide();
+        				   $('#nextUnanswered').hide();
+        				   $('#prevUnanswered').hide();
+        			   }
+        			   $('#progressBartest2').hide();
+        			   if(testMode){
+        			   		$("#submittest2").show();
+        			   		$("#referenceQuestionsTest2").hide();
+            		   } if(readOnlyMode){
+            			   
+            			   $("#submittest2").hide();
+            		   }
+        			   var correctOptionId = Number(data[0].correctAnswer);
+        			   	if(readOnlyMode){
+        					$("input[type=radio]").attr('disabled', true);
+        				   	$('#'+correctOptionId).prop('checked',true);
+        				   
+        				   	var referenceLinksArray = data[0].referenceLink;
+    						   	var referenceLinks = referenceLinksArray.split(",");
+    							$("#refSection").addClass('glyphicon glyphicon-info-sign alert alert-info');   						
+    							$("#refSection").append('<b>To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+        			   	}
+        			   
+        			   $('#correctAnswer').val(data[0].correctAnswer);
+        			   $('#referenceLink').val(data[0].referenceLink);
+        			  
+        			   jQuery.each( data[0].options, function( i, val ) {
+        				  $( "#radioLabel" + (i+1) ).text(val);        				  
+        				});	
+        			   $('#optionsContainer').show();
+        		   });
+                $("#content").empty().html(data);
+            });
+        }        		
+        if(tab_id==3){        	
+        	
+    		if(testMode){
+    			alert("previous attempt's stats \n a) Success rate is "+localStorage.getItem('test3PassPercent') +"\n b) Failure rate is "+localStorage.getItem('test3FailurePercent'));
+    		}
+    		
+    		$.get("test33.html", function (data) {		
+    		   	$.get("http://localhost:8080/mvcweb/getAllQNOptionsForATestAndLanguage?testId="+3+"&languageId="+optedLanguageId,function(data) {
+    		   		$(data).each(function(index) {
+    		   			test3QuestionsData[index] = data[index];        		   			
+    		   		});
+    		   		var questionNumber = test3Counter+1;
+    		   		
+    				//append the new question        				
+    			   $('#question').append('<br/><b>Question<br/></br> #'+questionNumber + "/" +test3QuestionsData.length + ")</b>&nbsp;&nbsp;"+data[0].question+'<br/> <br/> <b>Options</b>');
+    			   $('#qID').val(test3Counter);
+    			   
+    			   if(data[0].firstQuestion == true){
+    				   $('#prev').hide();
+    				   $('#nextUnanswered').hide();
+    				   $('#prevUnanswered').hide();
+    			   }
+    			   $('#progressBartest3').hide();
+    			   if(testMode){
+    			   		$("#submittest3").show();
+    			   		$("#referenceQuestionstest3").hide();
+        		   } if(readOnlyMode){
+        			   
+        			   $("#submittest3").hide();
+        		   }
+    			   var correctOptionId = Number(data[0].correctAnswer);
+    			   	if(readOnlyMode){
+    					$("input[type=radio]").attr('disabled', true);
+    				   	$('#'+correctOptionId).prop('checked',true);
+    				   
+    				   	var referenceLinksArray = data[0].referenceLink;
+						   	var referenceLinks = referenceLinksArray.split(",");
+							$("#refSection").addClass('glyphicon glyphicon-info-sign alert alert-info');   						
+							$("#refSection").append('<b>To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+    			   	}
+    			   
+    			   $('#correctAnswer').val(data[0].correctAnswer);
+    			   $('#referenceLink').val(data[0].referenceLink);
+    			  
+    			   jQuery.each( data[0].options, function( i, val ) {
+    				  $( "#radioLabel" + (i+1) ).text(val);        				  
+    				});	
+    			   $('#optionsContainer').show();
+    		   });
+            $("#content").empty().html(data);
+        });
+    }
+	if(tab_id==4){        	
+        	
+    		if(testMode){
+    			alert("previous attempt's stats \n a) Success rate is "+localStorage.getItem('test4PassPercent') +"\n b) Failure rate is "+localStorage.getItem('test4FailurePercent'));
+    		}
+    		
+    		$.get("test4.html", function (data) {		
+    		   	$.get("http://localhost:8080/mvcweb/getAllQNOptionsForATestAndLanguage?testId="+4+"&languageId="+optedLanguageId,function(data) {
+    		   		$(data).each(function(index) {
+    		   			test4QuestionsData[index] = data[index];        		   			
+    		   		});
+    		   		var questionNumber = test4Counter+1;
+    		   		
+    				//append the new question        				
+    			   $('#question').append('<br/><b>Question<br/></br> #'+questionNumber + "/" +test4QuestionsData.length + ")</b>&nbsp;&nbsp;"+data[0].question+'<br/> <br/> <b>Options</b>');
+    			   $('#qID').val(test4Counter);
+    			   
+    			   if(data[0].firstQuestion == true){
+    				   $('#prev').hide();
+    				   $('#nextUnanswered').hide();
+    				   $('#prevUnanswered').hide();
+    			   }
+    			   $('#progressBartest4').hide();
+    			   if(testMode){
+    			   		$("#submittest4").show();
+    			   		$("#referenceQuestionstest4").hide();
+        		   } if(readOnlyMode){
+        			   
+        			   $("#submittest4").hide();
+        		   }
+    			   var correctOptionId = Number(data[0].correctAnswer);
+    			   	if(readOnlyMode){
+    					$("input[type=radio]").attr('disabled', true);
+    				   	$('#'+correctOptionId).prop('checked',true);
+    				   
+    				   	var referenceLinksArray = data[0].referenceLink;
+						   	var referenceLinks = referenceLinksArray.split(",");
+							$("#refSection").addClass('glyphicon glyphicon-info-sign alert alert-info');   						
+							$("#refSection").append('<b>To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+    			   	}
+    			   
+    			   $('#correctAnswer').val(data[0].correctAnswer);
+    			   $('#referenceLink').val(data[0].referenceLink);
+    			  
+    			   jQuery.each( data[0].options, function( i, val ) {
+    				  $( "#radioLabel" + (i+1) ).text(val);        				  
+    				});	
+    			   $('#optionsContainer').show();
+    		   });
+            $("#content").empty().html(data);
+        });
+    }
+	if(tab_id==5){        	
+    	
+		if(testMode){
+			alert("previous attempt's stats \n a) Success rate is "+localStorage.getItem('test5PassPercent') +"\n b) Failure rate is "+localStorage.getItem('test5FailurePercent'));
+		}
+		
+		$.get("test5.html", function (data) {		
+		   	$.get("http://localhost:8080/mvcweb/getAllQNOptionsForATestAndLanguage?testId="+5+"&languageId="+optedLanguageId,function(data) {
+		   		$(data).each(function(index) {
+		   			test5QuestionsData[index] = data[index];        		   			
+		   		});
+		   		var questionNumber = test5Counter+1;
+		   		
+				//append the new question        				
+			   $('#question').append('<br/><b>Question<br/></br> #'+questionNumber + "/" +test5QuestionsData.length + ")</b>&nbsp;&nbsp;"+data[0].question+'<br/> <br/> <b>Options</b>');
+			   $('#qID').val(test5Counter);
+			   
+			   if(data[0].firstQuestion == true){
+				   $('#prev').hide();
+				   $('#nextUnanswered').hide();
+				   $('#prevUnanswered').hide();
+			   }
+			   $('#progressBartest5').hide();
+			   if(testMode){
+			   		$("#submittest5").show();
+			   		$("#referenceQuestionstest5").hide();
+    		   } if(readOnlyMode){
+    			   
+    			   $("#submittest5").hide();
+    		   }
+			   var correctOptionId = Number(data[0].correctAnswer);
+			   	if(readOnlyMode){
+					$("input[type=radio]").attr('disabled', true);
+				   	$('#'+correctOptionId).prop('checked',true);
+				   
+				   	var referenceLinksArray = data[0].referenceLink;
+					   	var referenceLinks = referenceLinksArray.split(",");
+						$("#refSection").addClass('glyphicon glyphicon-info-sign alert alert-info');   						
+						$("#refSection").append('<b>To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+			   	}
+			   
+			   $('#correctAnswer').val(data[0].correctAnswer);
+			   $('#referenceLink').val(data[0].referenceLink);
+			  
+			   jQuery.each( data[0].options, function( i, val ) {
+				  $( "#radioLabel" + (i+1) ).text(val);        				  
+				});	
+			   $('#optionsContainer').show();
+		   });
+        $("#content").empty().html(data);
+    });
+}     		
+
+	if(tab_id==6){        	
+    	
+		if(testMode){
+			alert("previous attempt's stats \n a) Success rate is "+localStorage.getItem('test6PassPercent') +"\n b) Failure rate is "+localStorage.getItem('test6FailurePercent'));
+		}
+		
+		$.get("test6.html", function (data) {		
+		   	$.get("http://localhost:8080/mvcweb/getAllQNOptionsForATestAndLanguage?testId="+6+"&languageId="+optedLanguageId,function(data) {
+		   		$(data).each(function(index) {
+		   			test6QuestionsData[index] = data[index];        		   			
+		   		});
+		   		var questionNumber = test6Counter+1;
+		   		
+				//append the new question        				
+			   $('#question').append('<br/><b>Question<br/></br> #'+questionNumber + "/" +test6QuestionsData.length + ")</b>&nbsp;&nbsp;"+data[0].question+'<br/> <br/> <b>Options</b>');
+			   $('#qID').val(test6Counter);
+			   
+			   if(data[0].firstQuestion == true){
+				   $('#prev').hide();
+				   $('#nextUnanswered').hide();
+				   $('#prevUnanswered').hide();
+			   }
+			   $('#progressBartest6').hide();
+			   if(testMode){
+			   		$("#submittest6").show();
+			   		$("#referenceQuestionstest6").hide();
+    		   } if(readOnlyMode){
+    			   
+    			   $("#submittest6").hide();
+    		   }
+			   var correctOptionId = Number(data[0].correctAnswer);
+			   	if(readOnlyMode){
+					$("input[type=radio]").attr('disabled', true);
+				   	$('#'+correctOptionId).prop('checked',true);
+				   
+				   	var referenceLinksArray = data[0].referenceLink;
+					   	var referenceLinks = referenceLinksArray.split(",");
+						$("#refSection").addClass('glyphicon glyphicon-info-sign alert alert-info');   						
+						$("#refSection").append('<b>To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+			   	}
+			   
+			   $('#correctAnswer').val(data[0].correctAnswer);
+			   $('#referenceLink').val(data[0].referenceLink);
+			  
+			   jQuery.each( data[0].options, function( i, val ) {
+				  $( "#radioLabel" + (i+1) ).text(val);        				  
+				});	
+			   $('#optionsContainer').show();
+		   });
+        $("#content").empty().html(data);
+    });
+}    
+	if(tab_id==7){        	
+    	
+		if(testMode){
+			alert("previous attempt's stats \n a) Success rate is "+localStorage.getItem('test7PassPercent') +"\n b) Failure rate is "+localStorage.getItem('test7FailurePercent'));
+		}
+		
+		$.get("test7.html", function (data) {
+		   	$.get("http://localhost:8080/mvcweb/getAllQNOptionsForATestAndLanguage?testId="+7+"&languageId="+optedLanguageId,function(data) {
+		   		$(data).each(function(index) {
+		   			test7QuestionsData[index] = data[index];        		   			
+		   		});
+		   		var questionNumber = test7Counter+1;
+		   		
+				//append the new question        				
+			   $('#question').append('<br/><b>Question<br/></br> #'+questionNumber + "/" +test7QuestionsData.length + ")</b>&nbsp;&nbsp;"+data[0].question+'<br/> <br/> <b>Options</b>');
+			   $('#qID').val(test7Counter);
+			   
+			   if(data[0].firstQuestion == true){
+				   $('#prev').hide();
+				   $('#nextUnanswered').hide();
+				   $('#prevUnanswered').hide();
+			   }
+			   $('#progressBartest7').hide();
+			   if(testMode){
+			   		$("#submittest7").show();
+			   		$("#referenceQuestionstest7").hide();
+    		   } if(readOnlyMode){
+    			   
+    			   $("#submittest7").hide();
+    		   }
+			   var correctOptionId = Number(data[0].correctAnswer);
+			   	if(readOnlyMode){
+					$("input[type=radio]").attr('disabled', true);
+				   	$('#'+correctOptionId).prop('checked',true);
+				   
+				   	var referenceLinksArray = data[0].referenceLink;
+					   	var referenceLinks = referenceLinksArray.split(",");
+						$("#refSection").addClass('glyphicon glyphicon-info-sign alert alert-info');   						
+						$("#refSection").append('<b>To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+			   	}
+			   
+			   $('#correctAnswer').val(data[0].correctAnswer);
+			   $('#referenceLink').val(data[0].referenceLink);
+			  
+			   jQuery.each( data[0].options, function( i, val ) {
+				  $( "#radioLabel" + (i+1) ).text(val);        				  
+				});	
+			   $('#optionsContainer').show();
+		   });
+        $("#content").empty().html(data);
+    });
+	} 
+
+}
+
+</script>
+</head>
+<body class="align:center">
+<br>
+<div class="container" class="nav nav-justified">
+	
+	<input id='qID' type="hidden" name="questionId" value="">
+	<input id='correctAnswer' type="hidden" name="correctAnswer" value="">	
+	<input id='referenceLink' type='hidden' name='test1ReferenceLink' value=''>
+	
+	<ul class="nav nav-pills">
+	    <li id="homePage" class="active"><a id="mn0" data-toggle="pill" href="#home"  onclick="javascript:show_tab('0');">Home</a></li>
+	    <li id='mnu1'><a id="mn1" data-toggle="pill" href="#menu1" onclick="javascript:show_tab('1');" >Test 1</a></li>
+	    <li><a id="mn2" data-toggle="pill" href="#menu2" onclick="javascript:show_tab('2');" >Test 2</a></li>
+	    <li><a id="mn3" data-toggle="pill" href="#menu3"  onclick="javascript:show_tab('3');">Test 3</a></li>
+	    <li><a id="mn4" data-toggle="pill" href="#menu4" onclick="javascript:show_tab('4');">Test 4</a></li>
+	    <li><a id="mn5" data-toggle="pill" href="#menu5" onclick="javascript:show_tab('5');">Test 5</a></li>
+	    <li><a id="mn6" data-toggle="pill" href="#menu6" onclick="javascript:show_tab('6');">Test 6</a></li>
+	    <li><a id="mn7" data-toggle="pill" href="#menu7" onclick="javascript:show_tab('7');">Test 7</a></li>
+	    <li><a id="mn8" data-toggle="pill" href="#menu7" onclick="javascript:show_tab('8');">Test 8</a></li>
+	</ul>
+  
+	<div id="content" class="homepagetabcontent nav nav-justified" >
+		
+		<h2>Prepare Anywhere
+		Hellooooooo sfsfsfsfsfsf********
+		</h2>
+			<p class="text-primary">
+	 
+		 	<ul class="small">
+			  	<i>
+					<li><b>	Prepare Anywhere</b> now brings you the advantage of preparing for the exam over the Internet.</li>
+					<li>It is now accessible through your phones to tablets to desktops.</li>
+					<li>Preparing for the exam is now at your finger tips everytime. </li>
+					<li> Each test can now be accessible at the click of a tab.</li>
+					<li>Happy learning and wishing you a great success!</li>
+				</i>
+				<br/>
+				
+				
+				<div class='well well-sm' id="languageSelection">
+				Choose Language :
+				<label id="english" class='radio-inline' data-toggle="tooltip" title="Opting this will display all the questions in English.!">
+					<input type="radio" name="english" id="englishRadio" checked=="checked" onchange="setLanguage(1);">
+				English&nbsp;&nbsp;</label>
+				<label id="latin" class="radio-inline well-sm" data-toggle="tooltip" title="Opting this will display all or some of the questions in Español, depending on the availability of that question in Español!">
+					<input type="radio" name="latin" id="latinRadio" onchange="setLanguage(2);"/>
+				Español</label></div><br/>
+				
+				<div class='well well-sm'>
+				Choose Mode of Preparation :
+				<label id="readModeLabel1" class='radio-inline' data-toggle="tooltip" title="Opting  this will allow you to go through \neach question with correct answer pre-chosen for you. Good Luck!">
+					<input type="radio" name="readWriteMode" id="readOnlyModeRadio" onchange="setMode('readOnlyMode');">
+				Read Through&nbsp;&nbsp;</label>
+				<label id="writeModeLabel1" class="radio-inline well-sm" data-toggle="tooltip" title="Opting this will allow you to take the exam. Good Luck!">
+					<input type="radio" name="readWriteMode" id="testModeRadio" onchange="setMode('testMode');"/>
+				Take Exam</label></div>
+			</p>					
+		</ul>
+	</div>
+				
+				
+</div>
+</body>
+</html>

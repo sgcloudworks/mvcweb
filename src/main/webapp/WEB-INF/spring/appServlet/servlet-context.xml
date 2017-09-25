@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+
+
+	
+
+	<mvc:annotation-driven />
+	<context:component-scan base-package="com.codeworks" />
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<!--<mvc:resources mapping = "/html/**" location = "/WEB-INF/views/html/" 
+		/> -->
+	<mvc:resources mapping="/**" location="/WEB-INF/views/html/" />
+	
+	<security:authentication-manager>
+        <security:authentication-provider>
+	    <security:user-service>
+		<security:user name="hi" password="hello" authorities="ROLE_USER" />
+	
+    </security:user-service>
+  </security:authentication-provider>
+    </security:authentication-manager>
+	
+	<security:http auto-config="true"  use-expressions="true">
+		
+		<security:intercept-url pattern="/**" access="ROLE_USER" />
+		<security:form-login login-page="/welcome" 
+						    default-target-url="/HomePage.html"
+						    authentication-failure-url="/welcome?error"
+						    username-parameter="emailId"
+						    password-parameter="password"
+						    />
+		<security:logout logout-success-url="/welcome?logout"/>	
+		<security:csrf disabled="true"/>
+		<security:session-management>
+			<security:concurrency-control max-sessions="1"
+				error-if-maximum-exceeded="true" />
+		</security:session-management>
+
+	</security:http>
+	
+	<!--
+	
+	<security:http use-expressions="true">
+        <security:intercept-url pattern="/**" access="isAuthenticated()"/>
+        <security:http-basic/>
+
+    </security:http>
+
+    <security:authentication-manager>
+        <security:authentication-provider ref="customAuthenticationProvider"/>
+    </security:authentication-manager><security:http auto-config="true"  use-expressions="true">
+		<security:intercept-url pattern="/**" access="ROLE_USER" />
+		<security:form-login login-page="/welcome" 
+						    default-target-url="/HomePage.html"
+						    authentication-failure-url="/welcome?error"
+						    username-parameter="emailId"
+						    password-parameter="password"
+						    />
+		<security:logout logout-success-url="/welcome?logout"/>	
+		<security:csrf disabled="true"/>
+	</security:http>
+	
+	<security:authentication-manager>
+		<security:authentication-provider>
+    <security:user-service>
+	<security:user name="hi" password="hello" authorities="ROLE_USER" />
+	
+    </security:user-service>
+  </security:authentication-provider>
+	</security:authentication-manager>-->
+	
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix">
+			<value>/WEB-INF/views/html/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+
+
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://localhost:5432/prepathome" />
+		<property name="username" value="postgres" />
+		<property name="password" value="root" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+
+	<!-- a PlatformTransactionManager is still required -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- (this dependency is defined somewhere else) -->
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg index="0" ref="dataSource" />
+		<constructor-arg index="1" value="false" />
+	</bean>
+
+	<bean id="postgresDAO" class="com.codeworks.spring.dao.PostgresDAO">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="testQOptionsService" class="com.codeworks.service.impl.TestQOptionsServiceImpl">
+	</bean>
+
+	<bean id="testQOptionsDAO" class="com.codeworks.spring.dao.impl.TestQOptionsDAOImpl">
+	</bean>
+	
+	<bean id="adminUserService" class="com.codeworks.service.impl.AdminUserServiceImpl">
+	</bean>
+
+	<bean id="adminUserDao" class="com.codeworks.spring.dao.impl.AdminUserDaoImpl">
+	</bean>
+	
+	<bean id="studentService" class="com.codeworks.service.impl.StudentServiceImpl">
+	</bean>
+
+	<bean id="studentDao" class="com.codeworks.spring.dao.impl.StudentDaoImpl">
+	</bean>
+	
+	<bean id="userService" class="com.codeworks.service.impl.UserServiceImpl">
+	</bean>
+	
+	<bean id="userDao" class="com.codeworks.spring.dao.impl.UserDaoImpl">
+	</bean>
+
+	<!-- <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean"> 
+		<property name="favorPathExtension" value="false"/> <property name="favorParameter" 
+	value="true"/> <property name="mediaTypes"> <value> json=application/json 
+		xml=application/xml html=text/html </value> </property> </bean> -->
+
+</beans>
+   
+
+	

@@ -1,0 +1,182 @@
+[
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 1,
+		"question": "Given that an 80,000 Btu/h gas furnace will have the combustion air supplied from a mechanical air supply system outdoor source, the combustion air in shall be at least ____ Cubic Feet per Minute of ventilation?",
+		"options": [
+			"28",
+			"32",
+			"45",
+			"53"
+		],
+		"correctAnswer": "1",
+		"explanationSteps": "80 x 0.35 = 28 CFM. IFGC 2012 - 304.9. Where all combustion air is provided by a mechanical air supply system, the combustion air shall be supplied from the outdoors at a rate not less than 0.35 cubic feet per minute per 1,000 Btu/h of total input rating of all appliances located within the space. Therefore, CFM = (0.35 cu-ft/min/1,000 BTU/h) * (80,000 Btu/h) = 0.35 cu-ft/min * 80 = 28 CFM.",
+		"referenceLink": "80 x 0.35 = 28 CFM. IFGC 2012 - 304.9. Where all combustion air is provided by a mechanical air supply system, the combustion air shall be supplied from the outdoors at a rate not less than 0.35 cubic feet per minute per 1,000 Btu/h of total input rating of all appliances located within the space. Therefore, CFM = (0.35 cu-ft/min/1,000 BTU/h) * (80,000 Btu/h) = 0.35 cu-ft/min * 80 = 28 CFM.",
+		"isActive": "Y",
+		"lastQuestion": false,
+		"firstQuestion": true
+	},
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 9,
+		"question": "Within ___ after the death of any employee as a result of a work-related incident, you must report the fatality to the Occupational Safety and Health Administration (OSHA), U.S. Department of Labor.",
+		"options": [
+			"1 hour",
+			"4 hours",
+			"8 hours",
+			"24 hours"
+		],
+		"correctAnswer": "3",
+		"explanationSteps": "OSHA 1904.39(a)",
+		"referenceLink": "OSHA 1904.39(a)",
+		"isActive": "Y",
+		"lastQuestion": false,
+		"firstQuestion": false
+	},
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 5,
+		"question": "According to the standard method of calculation in the IFGC, what would be the required volume in cubic feet of indoor combustion air be, given a 100,000 Btu/hr gas furnace is rated with an annual fuel utilization efficiency â€œAFUEâ€ at 80%?",
+		"options": [
+			"1,000.",
+			"2,000.",
+			"3,000.",
+			"4,000."
+		],
+		"correctAnswer": "4",
+		"explanationSteps": "IFGC 2012 304.5.1. 50 * 80 = 4000. Required volume of indoor air = 50 cu-ft/1,000 Btu/h. (50 cu-ft/1,000 Btu/h) * (100,000 Btu/h) * 80% = 50 * 100 * 0.80 = 4,000.",
+		"referenceLink": "IFGC 2012 304.5.1. 50 * 80 = 4000. Required volume of indoor air = 50 cu-ft/1,000 Btu/h. (50 cu-ft/1,000 Btu/h) * (100,000 Btu/h) * 80% = 50 * 100 * 0.80 = 4,000.",
+		"isActive": "Y",
+		"lastQuestion": false,
+		"firstQuestion": false
+	},
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 6,
+		"question": "Incomplete combustion occurs when a flame does not receive enough oxygen to finish the combustion process. A result of incomplete combustion would be ___, which is colorless, odorless, and highly toxic.",
+		"options": [
+			"benzyl bromide",
+			"carbon monoxide",
+			"carbon dioxide",
+			"phosgene gas"
+		],
+		"correctAnswer": "2",
+		"explanationSteps": "Modern Refrigeration and Air Conditioning 2014, 35.1.3(Safety Note)",
+		"referenceLink": "Modern Refrigeration and Air Conditioning 2014, 35.1.3(Safety Note)",
+		"isActive": "Y",
+		"lastQuestion": false,
+		"firstQuestion": false
+	},
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 10,
+		"question": "An Air Conditioning and Refrigeration Contracting Company must notify the department of all licensees who have assigned their licenses to the company and must notify the department within how many calendar days when any licensee whose license is assigned to the company has left the company?",
+		"options": [
+			"60 calendar days.",
+			"45 calendar days.",
+			"30 calendar days.",
+			"14 calendar days."
+		],
+		"correctAnswer": "3",
+		"explanationSteps": "Texas Air Conditioning and Refrigeration Administrative Rules 75.71(a)(1).",
+		"referenceLink": "Texas Air Conditioning and Refrigeration Administrative Rules 75.71(a)(1).",
+		"isActive": "Y",
+		"lastQuestion": false,
+		"firstQuestion": false
+	},
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 7,
+		"question": "An oral or written agreement for construction alteration, or repair, of buildings, structures, or systems is considered a _____.",
+		"options": [
+			"documented issue.",
+			"firm promise.",
+			"negotiation.",
+			"contract."
+		],
+		"correctAnswer": "4",
+		"explanationSteps": "General Knowledge",
+		"referenceLink": "General Knowledge",
+		"isActive": "Y",
+		"lastQuestion": false,
+		"firstQuestion": false
+	},
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 4,
+		"question": "Where communicating with the outdoors through horizontal ducts, each opening shall have a minimum free area of 1 in-sq/_______ Btu/h of total input rating of all appliances in the enclosure.",
+		"options": [
+			"2,000",
+			"1,000",
+			"4,000",
+			"3,000"
+		],
+		"correctAnswer": "1",
+		"explanationSteps": "20012 UMC 701.6.1(2)",
+		"referenceLink": "20012 UMC 701.6.1(2)",
+		"isActive": "Y",
+		"lastQuestion": false,
+		"firstQuestion": false
+	},
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 8,
+		"question": "Federal unemployment tax act (FUTA) rate is 6.0%, which applies to the first ___ you pay to each employee as wages during the year.",
+		"options": [
+			"$500",
+			"$2,000",
+			"$4,000",
+			"$7,000"
+		],
+		"correctAnswer": "4",
+		"explanationSteps": "IRS, Publication 15, Circular E, Employers Tax Guide 2016 â€“ 14. Federal Unemployment (FUTA) Tax: (Computing FUTA tax.)â€¦the FUTA tax rate is 6.0%. The tax applies to the first $7,000 you pay to each employee as wages during the year...",
+		"referenceLink": "IRS, Publication 15, Circular E, Employers Tax Guide 2016 â€“ 14. Federal Unemployment (FUTA) Tax: (Computing FUTA tax.)â€¦the FUTA tax rate is 6.0%. The tax applies to the first $7,000 you pay to each employee as wages during the year...",
+		"isActive": "Y",
+		"lastQuestion": false,
+		"firstQuestion": false
+	},
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 2,
+		"question": "The required size of openings for combustion, ventilation and dilution air shall be based on the net free area of each opening. Where the design and free area of louvers and grilles are not known, it shall be assumed that wood louvers will have ___ free area and metal louvers and grilles will have ___ free area.",
+		"options": [
+			"All louvers must be in a fixed open position.",
+			"Wood louvers will have a 50% free area opening and metal louvers will have a 50% frea area opening.",
+			"Wood louvers will have a 25% free area opening and metal louvers will have a 75% free area opening.",
+			"Wood louvers will have a 75% free area opening and metal louvers will have a 25% free area opening."
+		],
+		"correctAnswer": "3",
+		"explanationSteps": "IFGC 2012 304.10",
+		"referenceLink": "IFGC 2012 304.10",
+		"isActive": "Y",
+		"lastQuestion": false,
+		"firstQuestion": false
+	},
+	{
+		"languageId": 1,
+		"testId": 1,
+		"questionId": 3,
+		"question": "Where a closet is designed for the installation of a clothes dryer, an opening having an area of not less than _____ for makeup air shall be provided in the closet enclosure.",
+		"options": [
+			"40 square inches",
+			"65 square inches",
+			"80 square inches",
+			"100 square inches"
+		],
+		"correctAnswer": "4",
+		"explanationSteps": "IFGC 2009, 614.5",
+		"referenceLink": "IFGC 2009, 614.5",
+		"isActive": "Y",
+		"lastQuestion": true,
+		"firstQuestion": false
+	}
+]

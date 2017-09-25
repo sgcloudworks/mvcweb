@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test 1</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+
+        var test1UserAnswersObject = {};
+        var test1CorrectAnswersObject = {};
+
+        var test1UnansweredQuestionsDataObject = {};
+
+        var wronglyAnsweredQsDataForReference = {};
+        
+        
+  	  test2Counter = 0;
+  	  test3Counter = 0;
+  	  test4Counter = 0;
+  	  test5Counter = 0;
+  	  test6Counter = 0;
+  	  test7Counter = 0;
+  	  
+  	  
+  	  test2QuestionsData = [];
+  	  test3QuestionsData = [];
+  	  test4QuestionsData = [];
+  	  test5QuestionsData = [];
+  	  test6QuestionsData = [];
+  	  test7QuestionsData = [];
+
+        function getPreviousUnansweredQuestion() {
+
+            if (testMode) {
+                var prevUnansweredQuestionData = test1UserAnswersObject[test1Counter];
+                if (!(prevUnansweredQuestionData)) {
+                    test1UnansweredQuestionsDataObject[test1Counter] = test1QuestionsData[test1Counter];
+                }
+            }
+
+            if (testMode && test1Counter > 0) {
+
+                var getPrevUnAnsweredKeys = Object.keys(test1UnansweredQuestionsDataObject);
+                getPrevUnAnsweredKeys.sort();
+
+                var nextSmallIndex = Math.max.apply(Math, getPrevUnAnsweredKeys.filter(function (x) { return x < test1Counter }));
+                var isAFiniteNumber = Number.isFinite(nextSmallIndex);
+
+                //check if previous question is answered, if not call getPreviousQuestion, it should solve the purpose
+                //in order to do that just check test1UserAnsweresObject[test1Counter-1] object, if the object is available call getPreviousQuestion
+                var prevQuestionNumber = test1Counter - 1;
+                var prevQuestionAnsweredByUser = test1UserAnswersObject[prevQuestionNumber];
+                if (prevQuestionAnsweredByUser == null) {
+                    getPreviousQuestion();
+                } else {
+                    if (isAFiniteNumber) {
+                        test1Counter = Number(nextSmallIndex) + 1;
+                        getPreviousQuestion();
+                    } else {
+                        $('#prevUnanswered').hide();
+                    }
+
+                }
+
+
+            }
+        }
+
+        function getPreviousQuestion() {
+
+
+            if (testMode) {
+                var nextUnansweredQuestionsData = test1UserAnswersObject[test1Counter];
+                if (!(nextUnansweredQuestionsData)) {
+                    test1UnansweredQuestionsDataObject[test1Counter] = test1QuestionsData[test1Counter];
+
+                }
+            }
+
+
+            test1Counter = test1Counter - 1;
+
+            if (testMode && Object.keys(test1UnansweredQuestionsDataObject).length > 0) {
+
+                var getPrevUnAnsweredKeys = Object.keys(test1UnansweredQuestionsDataObject);
+                getPrevUnAnsweredKeys.sort();
+
+                /*var nextSmallIndex = Math.max.apply(Math, getPrevUnAnsweredKeys.filter(function(x){return x < test1Counter}));
+                var isAFiniteNumber = Number.isFinite(nextSmallIndex);*/
+
+                //check to see anymore unaswered questions lesser than this smallIndex, if not no need to display prevtUnaswered button.
+                var lesserThanNextSmallIndex = Math.max.apply(Math, getPrevUnAnsweredKeys.filter(function (x) { return x < test1Counter }));
+                var isInfinity = (!(Number.isFinite(lesserThanNextSmallIndex)));
+
+                if (isInfinity) {
+                    $('#prevUnanswered').hide();
+                }
+
+                //Check to see if there is a need to display nextUnanswered beyond this question
+                var nextBigIndex = Math.min.apply(Math, getPrevUnAnsweredKeys.filter(function (x) { return x > test1Counter }));
+                var isABigInfiniteNumber = (!(Number.isFinite(nextBigIndex)));
+
+                if (isABigInfiniteNumber) {
+                    $('#nextUnanswered').hide();
+                } else {
+                    $('#nextUnanswered').show();
+                }
+
+
+            }
+
+            var qId = test1Counter;
+            var userChosenOption = test1UserAnswersObject[qId];
+
+            if (userChosenOption == null) {
+                
+                $("input[type=radio]").attr('disabled', false);
+                $('input:radio:checked').each(function () {
+                    $('input:radio:checked')[0].checked = false;
+                });
+            }
+            if (qId == 0) {
+                $('#prev').hide();
+                $('#prevUnanswered').hide();
+                //need to see whether to show nextUnaswered button when showing the first question
+                //$('#nextUnanswered').hide();
+            }
+
+            if (qId >= 0) {
+                $('#next').show();
+                $('#progressBartest1').hide();
+                if (testMode) {
+                    $("#submittest1").show();
+                } if (readOnlyMode) {
+                    $("#submittest1").hide();
+                }
+                var data = test1QuestionsData[qId];
+                renderingLogic(data, qId);
+                //Disable full page
+                /*$("body").on("contextmenu",function(e){
+                      return false;
+                  });*/
+
+            }
+            if (testMode) {
+                gettest1Scores();
+                //need to show nextUnaswered button depsite a question is not reached if the gap between current prevUnanswered question
+                //and userAnswered question is greater than two and less than the length of the array
+                debugger;
+                var userAnsweredKeyList = Object.keys(test1UserAnswersObject);
+                userAnsweredKeyList.sort();
+                var allQsAnaswered = (userAnsweredKeyList.length == test1QuestionsData.length);
+                var maxIndexIntheAnsweredQsList = Math.max.apply(Math, userAnsweredKeyList);
+                var isLastQuestionAnswered= (maxIndexIntheAnsweredQsList == Number(test1QuestionsData.length-1));
+                
+                if(test1Counter >=0 && test1Counter < Number(test1QuestionsData.length-1)) {
+                	var sampleCounter = maxIndexIntheAnsweredQsList + 1;
+                	if(sampleCounter<test1QuestionsData.length-1){
+                		var newCounter = Number(sampleCounter);
+                        test1UnansweredQuestionsDataObject[newCounter] = test1QuestionsData[newCounter];
+                        $('#nextUnanswered').show();
+                	}/* 
+                	var newCounter = Number();
+                    test1UnansweredQuestionsDataObject[newCounter] = test1QuestionsData[newCounter];
+                    $('#nextUnanswered').show(); */
+                }
+                /* var userAnsweredKeyList = Object.keys(test1UserAnswersObject);
+                userAnsweredKeyList.sort();
+                var maxIndexIntheAnsweredQsList = Math.max.apply(Math, userAnsweredKeyList);
+                var gapBetweenIndexes = Number(maxIndexIntheAnsweredQsList - test1Counter);
+                
+                //var newCounter = Number(test1Counter+gapBetweenIndexes);
+                if (!allQsAnaswered && gapBetweenIndexes >= 1 && gapBetweenIndexes < test1QuestionsData.length && maxIndexIntheAnsweredQsList < test1QuestionsData.length) {
+                    /*
+                    0th index not answered - 1 question
+                    1st index answered - 2ns question
+                    2nd index answered - 3rd question
+                    3rd index unanswered - 4th question
+
+                    if we are hitting prevUnanswered then need to show nextUnanswered to take us 2
+                    */
+                    /*var newCounter = Number(maxIndexIntheAnsweredQsList + 1);
+                    test1UnansweredQuestionsDataObject[newCounter] = test1QuestionsData[newCounter];
+                    $('#nextUnanswered').show();
+                } */
+            }
+
+        }
+
+        function getNextUnansweredQuestion() {
+
+            if (testMode) {
+                var prevUnansweredQuestionData = test1UserAnswersObject[test1Counter];
+                if (!(prevUnansweredQuestionData)) {
+                    //prevUnansweredQuestionsData[test1Counter] = test1QuestionsData[test1Counter];
+                    test1UnansweredQuestionsDataObject[test1Counter] = test1QuestionsData[test1Counter];
+
+                }
+            }
+
+            //check if next question is answered, if not call getNextQuestion, it should solve the purpose
+            //in order to do just check test1UserAnsweresObject[test1Counter+1] object, if the object is available call getPreviousQuestion
+            if (testMode && test1Counter >= 0 && test1Counter < test1QuestionsData.length) {
+
+                var nextUnAnsweredKeysList = Object.keys(test1UnansweredQuestionsDataObject);
+                nextUnAnsweredKeysList.sort();
+
+                var nextBigIndex = Math.min.apply(Math, nextUnAnsweredKeysList.filter(function (x) { return x > test1Counter }));
+                var isAFiniteNumber = Number.isFinite(nextBigIndex);
+
+
+                /* if(isAnotherInfiniteNumber){
+                    $('#prevUnanswered').hide();
+                } */
+
+                var nextQuestionNumber = Number(test1Counter) + 1;
+                var nextQuestionAnsweredByUser = test1UserAnswersObject[nextQuestionNumber];
+                if (nextQuestionAnsweredByUser == null) {
+                    //alert(" test1 Counter before calling getNextQuestion from getNextUnanswered "+test1Counter);
+                    getNextQuestion();
+                } else {
+                    //find the next unanswered question and set test1Counter accordingly and call getNextQuestion() method
+
+
+
+                    //alert(" nextBigIndex "+nextBigIndex);
+                    if (isAFiniteNumber) {
+                        test1Counter = Number(nextBigIndex) - 1;
+                        getNextQuestion();
+
+                    } else {
+                        $('#nextUnanswered').hide();
+                        //getPreviousUnansweredQuestion();
+                    }
+                }
+            }
+        }
+
+        function getNextQuestion() {
+
+            if (testMode) {
+                var prevUnansweredQuestionData = test1UserAnswersObject[test1Counter];
+                if (!(prevUnansweredQuestionData)) {
+                    //prevUnansweredQuestionsData[test1Counter] = test1QuestionsData[test1Counter];
+                    test1UnansweredQuestionsDataObject[test1Counter] = test1QuestionsData[test1Counter];
+
+                }
+            }
+
+            //As we have some more questions, can show the previous button
+            $('#prev').show();
+            //Increament the counter to get the questions from test1QuestionsData
+            test1Counter = test1Counter + 1;
+
+            if (testMode && Object.keys(test1UnansweredQuestionsDataObject).length > 0) {
+
+
+                var nextUnAnsweredKeysList = Object.keys(test1UnansweredQuestionsDataObject);
+                nextUnAnsweredKeysList.sort();
+
+                /*var nextSmallIndex = Math.max.apply(Math, nextUnAnsweredKeysList.filter(function(x){return x < test1Counter}));
+                var isAnotherInfiniteNumber = (!(Number.isFinite(nextSmallIndex)));
+
+                var nextBigIndex = Math.min.apply(Math, nextUnAnsweredKeysList.filter(function(x){return x > test1Counter}));
+                var isAFiniteNumber = Number.isFinite(nextBigIndex);*/
+
+                //check to see anymore unaswered questions greater than this bigIndex, if not no need to display nextUnaswered button.
+                var biggerThanNextBigIndex = Math.min.apply(Math, nextUnAnsweredKeysList.filter(function (x) { return x > test1Counter }));
+                var isInfinity = (!(Number.isFinite(biggerThanNextBigIndex)));
+
+                var nextSmallIndex = Math.max.apply(Math, nextUnAnsweredKeysList.filter(function (x) { return x < test1Counter }));
+                var isAnotherInfiniteNumber = (!(Number.isFinite(nextSmallIndex)));
+
+                if (isInfinity) {
+                    $('#nextUnanswered').hide();
+                }
+
+                if (isAnotherInfiniteNumber) {
+                    $('#prevUnanswered').hide();
+                } else {
+                    $('#prevUnanswered').show();
+                }
+            }
+
+            //set counter to qId for later user
+            var qId = test1Counter;
+
+
+
+            if (qId >= 0 && qId < test1QuestionsData.length) {
+                //following variable will be used to reset the radio buttons (enable and make them availabe for next choice)
+                var userChosenOption = test1UserAnswersObject[qId];
+                if (userChosenOption == null) {
+                    $("input[type=radio]").attr('disabled', false);
+                    $('input:radio:checked').each(function () {
+                        $('input:radio:checked')[0].checked = false;
+                    });
+
+                }
+
+                //get the question data from available questions
+                var data = test1QuestionsData[qId];
+                //identifier being used to hide the next button and show the "End Exam" button
+                //can use data.lastQuestion == true too here. need to check
+                var lastQuestionIdentifier = test1QuestionsData.length - test1Counter;
+                if (lastQuestionIdentifier == 1) {
+                    $('#next').hide();
+                    $('#nextUnanswered').hide();
+                    if (readOnlyMode) {
+                        $('#submittest1').hide();
+                    } if (testMode) {
+                        $('#submittest1').show();
+                    }
+                }
+                //call the common logic for rendering the UI.
+                renderingLogic(data, qId);
+
+            } else {
+                //No more questions hence hiding.
+                $('#next').hide();
+            }
+            if (testMode) {
+                //get the progress bar with relevant data
+                gettest1Scores();
+            }
+
+
+            //Disable full page
+            /* $("body").on("contextmenu",function(e){
+                 return false;
+             });*/
+
+        }
+
+        function renderingLogic(data, qId) {
+            //reset the info/success/danger informative section
+            $('#refSection').empty();
+            $("#refSection").removeClass('alert alert-danger glyphicon glyphicon-remove');
+            $("#refSection").removeClass('glyphicon glyphicon-thumbs-up alert alert-success');
+            $("#refSection").removeClass('glyphicon glyphicon-info-sign alert alert-info');
+
+            //Do not delete the following is reseting the user choices, so need to use with caution
+            $('input:radio:checked').each(function () {
+                $('input:radio:checked')[0].checked = false;
+            });
+
+            //empty the previous question
+            $('#question').empty();
+            var questionNumber = test1Counter + 1;
+            //append the new question
+            $('#question').append('<br/><b>Question<br/></br> #' + questionNumber + "/" + test1QuestionsData.length + ")</b>&nbsp;&nbsp;" + data.question
+                + '<br/> <br/> <b>Options</b>');
+
+            // set the hidden varaibles
+            $('#qID').val(qId);
+            $('#correctAnswer').val(data.correctAnswer);
+            $('#referenceLink').val(data.referenceLink);
+
+            //populate the options with text
+            jQuery.each(data.options, function (i, val) {
+                $("#radioLabel" + (i + 1)).text(val);
+            });
+
+            //using the following to set the right values while navigating back and forth between prev and next questions
+            //this is for test mode need to verify in debug again to add the condition
+            var userChosenOption = test1UserAnswersObject[qId];
+            var correctAnswer = test1CorrectAnswersObject[qId];
+            if (!(userChosenOption == null)) {
+
+                $('#' + userChosenOption).prop('checked', true);
+                $("input[type=radio]").attr('disabled', true);
+
+                if (userChosenOption == correctAnswer) {
+                    $("#refSection").addClass('glyphicon glyphicon-thumbs-up alert alert-success');
+                    $("#refSection").append('<strong> Good Job!</strong>');
+                } else {
+                    var referenceLinksArray = document.getElementById('referenceLink').value;
+                    var referenceLinks = referenceLinksArray.split(",");
+                    $("#refSection").addClass('glyphicon glyphicon-remove alert alert-danger ');
+
+                    $("#refSection").append('<b>Incorrect Option chosen earlier!To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+                }
+            }
+
+            //this is being used in read only mode
+            var correctOptionId = Number(data.correctAnswer);
+            if (readOnlyMode) {
+                $("input[type=radio]").attr('disabled', true);
+                $('#' + correctOptionId).prop('checked', true);
+
+                var referenceLinksArray = data.referenceLink;
+                var referenceLinks = referenceLinksArray.split(",");
+                $("#refSection").addClass('glyphicon glyphicon-info-sign alert alert-info');
+                $("#refSection").append('<b>To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+            }
+
+            //need to see whether these are being used anymore
+            $('#optionsContainer').show();
+            $('.tab-content').show();
+
+        }
+
+
+        function gettest1Scores() {
+
+            var totalQuestions = test1QuestionsData.length;
+            var wrongAnswers = 0;
+            var correctAnswers = 0;
+
+
+            for (var i in test1QuestionsData) {
+                var userChosenOption = test1UserAnswersObject[i];
+                var correctAnswerOption = test1CorrectAnswersObject[i];
+
+                if ((!(userChosenOption == null)) && (!(correctAnswerOption == null)) && userChosenOption == correctAnswerOption) {
+                    correctAnswers = correctAnswers + 1;
+                } if ((!(userChosenOption == null)) && (!(correctAnswerOption == null)) && userChosenOption != correctAnswerOption) {
+                    wrongAnswers = wrongAnswers + 1;
+                }
+            }
+
+            var answeredQuestionsNumbers = wrongAnswers + correctAnswers;
+            if (totalQuestions != (answeredQuestionsNumbers)) {
+
+                var unansweredQuestionsNumbers = totalQuestions - answeredQuestionsNumbers;
+                var successRate = ((correctAnswers / totalQuestions) * 100);
+                var failureRate = ((wrongAnswers / totalQuestions) * 100);
+                var unansweredRate = (((totalQuestions - (answeredQuestionsNumbers)) / totalQuestions) * 100);
+
+                $('#successtest1')[0].innerHTML = correctAnswers + ' out of ' + totalQuestions + ' correct (i.e.' + successRate.toFixed(2) + '%)';
+                $('#successtest1').css('width', successRate + "%");
+
+                $('#incorrecttest1')[0].innerHTML = wrongAnswers + ' out of ' + totalQuestions + ' incorrect (i.e.' + failureRate.toFixed(2) + '%)';
+                $('#incorrecttest1').css('width', failureRate + "%");
+
+                $('#unAnsweredtest1')[0].innerHTML = unansweredQuestionsNumbers + ' out of ' + totalQuestions + ' pending (i.e.' + unansweredRate.toFixed(2) + '%)';
+                $('#unAnsweredtest1').css('width', unansweredRate + "%");
+
+                localStorage.setItem('test1PassPercent', successRate.toFixed(2) + '%');
+                localStorage.setItem('test1FailurePercent', failureRate.toFixed(2) + '%');
+                localStorage.setItem('test1UnansweredPercent', unansweredRate.toFixed(2) + '%');
+
+                $('#progressBartest1').show();
+                //alert(" There are still some unanswered questions in this test!. If you don't want to continue click <b>Home</b> tab")
+
+            } else if (totalQuestions == correctAnswers) {
+                $('#successtest1')[0].innerHTML = '&nbsp;<b><i>Congratulations!. You have cleared this test</i></b>';
+                //$('#successtest1').addClass('glyphicon glyphicon-thumbs-up');
+                $('#successtest1').css('width', 100 + "%");
+
+                $('#prev').hide();
+                $('#next').hide();
+
+                $('#prevUnanswered').hide();
+                $('#nextUnanswered').hide();
+
+                $('#submittest1').hide();
+
+                $('#progressBartest1').show();
+                localStorage.setItem('test1PassPercent', '100%');
+            } else {
+
+                var successRate = ((correctAnswers / totalQuestions) * 100);
+                var failureRate = ((wrongAnswers / totalQuestions) * 100);
+
+                $('#successtest1')[0].innerHTML = correctAnswers + ' out of ' + totalQuestions + ' correct (i.e.' + successRate.toFixed(2) + '%)';
+                $('#successtest1').css('width', successRate + "%");
+
+                $('#incorrecttest1')[0].innerHTML = wrongAnswers + ' out of ' + totalQuestions + ' incorrect (i.e.' + failureRate.toFixed(2) + '%)';
+                $('#incorrecttest1').css('width', failureRate + "%");
+
+                $('#unAnsweredtest1').css('width', 0 + "%");
+
+                $('#prevUnanswered').hide();
+                $('#nextUnanswered').hide();
+                $('#submittest1').hide();
+
+                $("#referenceQuestionsTest1").show();
+                localStorage.setItem('test1PassPercent', successRate.toFixed(2) + '%');
+                localStorage.setItem('test1FailurePercent', failureRate.toFixed(2) + '%');
+                $('#progressBartest1').show();
+            }
+        }
+
+        function setDataForReviewQuestions() {
+            test1Counter = 0;
+            test1QuestionsData = wronglyAnsweredQsDataForReference;
+
+        }
+
+        $('input[type=radio][name=optradio]').change(function () {
+
+            $('input:radio').each(function () {
+                if ($(this).is(':checked')) {
+                    $('#refSection').empty();
+                    $("#refSection").removeClass('glyphicon glyphicon-remove alert alert-danger ');
+                    $("#refSection").removeClass('glyphicon glyphicon-thumbs-up alert alert-success');
+
+                    var rightOption = Number(document.getElementById('correctAnswer').value);//+ 1;
+                    var referenceLinksArray = document.getElementById('referenceLink').value;
+                    var userOption = Number($(this)[0].id);
+                    var questionNumber = test1Counter;
+
+                    test1UserAnswersObject[questionNumber] = userOption;
+                    test1CorrectAnswersObject[questionNumber] = rightOption;
+
+                    if (rightOption == userOption) {
+                        $("#refSection").addClass('glyphicon glyphicon-thumbs-up alert alert-success');
+                        $("#refSection").append('<strong> Good Job!</strong>');
+                    } else {
+
+                        var wrongAnswersArrayLength = Object.keys(wronglyAnsweredQsDataForReference).length;
+                        wronglyAnsweredQsDataForReference[wrongAnswersArrayLength] = test1QuestionsData[test1Counter];
+
+                        var referenceLinks = referenceLinksArray.split(",");
+                        $("#refSection").addClass('glyphicon glyphicon-remove alert alert-danger ');
+                        $("#refSection").append('<b><em> Incorrect Option! To get more information on this please</em></b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+
+                    }
+                    if (testMode) {
+                        $("input[type=radio]").attr('disabled', true);
+                        delete test1UnansweredQuestionsDataObject[test1Counter];
+                    }
+                    gettest1Scores();
+                }
+            });
+        });
+
+
+    </script>
+
+</head>
+<body>
+    <ul>
+        <input id='qID' type="hidden" name="questionId" value="">
+        <input id='correctAnswer' type="hidden" name="correctAnswer" value="">
+        <input id='questionId' type="hidden" name="questionId" value="">
+        <input id='referenceLink' type='hidden' name='test1ReferenceLink' value=''>
+
+
+
+
+        <div id="content" class="homepagetabcontent">
+
+
+            <p id="question" class="small"></p>
+
+            <div id="optionsContainer" class="nav nav-justified" scroll='auto'>
+                <ul class="small">
+                    <div class="radio well-sm" id="radio1">
+                        <input type="radio" name="optradio" id="1" vertical-align='middle' /><label id="radioLabel1"></label>
+                        <div>
+                            <div class="radio" id="radio2">
+                                <input type="radio" name="optradio" id="2" /><label id="radioLabel2"></label>
+                            </div>
+                            <div class="radio" id="radio3">
+                                <input type="radio" name="optradio" id="3" /><label id="radioLabel3"></label>
+                            </div>
+                            <div class="radio" id="radio4">
+                                <input type="radio" name="optradio" id="4" /><label id="radioLabel4"></label>
+                            </div>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+            <div id="refSection">
+            </div>
+            <ul class="pager">
+                <li>
+                    <button type="button" class="btn btn-primary" id="prevUnanswered"
+                            onclick="javascript:getPreviousUnansweredQuestion();">
+                        Previous Unanswered
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary" id="prev"
+                            onclick="javascript:getPreviousQuestion();">
+                        Previous
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary" id="next"
+                            onclick="javascript:getNextQuestion();">
+                        Next
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary" id="nextUnanswered"
+                            onclick="javascript:getNextUnansweredQuestion();">
+                        Next Unanswered
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary" id="submittest1"
+                            onclick="javascript:gettest1Scores();">
+                        End Exam
+                    </button>
+                </li>
+                <!-- <li><button type="button" class="btn btn-primary" id="referenceQuestionsTest1"
+                        onclick="javascript:setDataForReviewQuestions();">Review Wrongly Answered Questions</button></li> -->
+            </ul>
+            <div class="progress" id='progressBartest1'>
+                <div class="progress-bar progress-bar-success" role="progressbar" style="width:40%" id="successtest1" align-content='left'>
+                    Correct
+                </div>
+                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:30%" id="unAnsweredtest1">
+                    Unanswered
+                </div>
+                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:30%" id="incorrecttest1">
+                    Incorrect
+                </div>
+            </div>
+        </div>
+
+    </ul>
+</body>
+</html>

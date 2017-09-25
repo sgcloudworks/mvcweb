@@ -1,0 +1,134 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+  
+  //alert("homePage var vlue readMode = "+readOnlyMode);
+  //alert("homePage var vlue testModes = "+testMode);
+  $(document).ready(function () {
+//$(document).on('pageinit',function(){
+	debugger;
+	  test1Counter = 0;
+	  test2Counter = 0;
+	  test3Counter = 0;
+	  test4Counter = 0;
+	  test5Counter = 0;
+	  test6Counter = 0;
+	  test7Counter = 0;
+	  
+	  test1QuestionsData = [];
+	  test2QuestionsData = [];
+	  test3QuestionsData = [];
+	  test4QuestionsData = [];
+	  test5QuestionsData = [];
+	  test6QuestionsData = [];
+	  test7QuestionsData = [];
+	  
+	  $('#progressBartest1').hide();
+	  $('#progressBartest2').hide();
+	  $('#progressBartest3').hide();
+	  $('#progressBartest4').hide();
+	  $('#progressBartest5').hide();
+	  $('#progressBartest6').hide();
+	  $('#progressBartest7').hide();
+	  
+	  $('#submittest1').hide();
+	  $('#submittest2').hide();
+	  $('#submittest3').hide();
+	  $('#submittest4').hide();
+	  $('#submittest5').hide();
+	  $('#submittest6').hide();
+	  $('#submittest7').hide();
+	  
+	  $('#next').show();
+	  //$('#submitTest3').hide();
+	  //$('#progressBarTest3').hide();
+	  
+	  if(optedLanguageId==2){
+	//optedLanguageId = 2;
+	$('#latinRadio')[0].checked = true;
+	$('#englishRadio')[0].checked = false;
+} else {	
+	$('#latinRadio')[0].checked = false;
+	$('#englishRadio')[0].checked = true;
+}
+  if(readOnlyMode){
+	  $('#readOnlyModeRadio').prop('checked',true);
+	  $('#testModeRadio').prop('checked',false);
+  }
+  if(testMode){
+	  $('#testModeRadio').prop('checked',true);
+	  $('#readOnlyModeRadio').prop('checked',false);
+  }
+	  
+  });
+
+  $('input[type=radio][name=readWriteMode]').change(function() {
+		debugger;
+		$('input:radio').each(function() {
+			if ($(this).is(':checked')) {
+				
+				var radioCheckedInHomePage = $(this)[0].id;
+				if(radioCheckedInHomePage == 'readOnlyModeRadio'){
+					readOnlyMode = true;
+					testMode = false;
+				}
+				if(radioCheckedInHomePage == 'testModeRadio'){
+					testMode = true;
+					readOnlyMode = false;
+				}
+			}
+		});
+		
+	});
+  
+/*$(document).ready(function () {
+    //Disable full page
+    $("body").on("contextmenu",function(e){
+        return false;
+    });*/
+    </script>
+  </head>
+  <body>
+  <ul>
+    </ul>
+  
+<div id="content" class="homepagetabcontent nav nav-justified">
+		
+		<h2>Prep At Home</h2>
+			<p class="text-primary">
+	 
+		 	<ul class="small">
+			  	<i>
+					<li>Prep At Home now brings you the advantage of preparing for the exam over the Internet.</li>
+					<li>It is now accessible through your phones to tablets to desktops.</li>
+					<li>Preparing for the exam is now at your finger tips everytime. </li>
+					<li> Each test can now be accessible at the click of a tab.</li>
+					<li>Happy learning and wishing you a great success!</li>
+				</i>
+<br/>			<div class='well well-sm' id="languageSelection">
+				<label id="english" class='radio-inline' data-toggle="tooltip" title="Opting this will display all the questions in English.!">
+					<input type="radio" name="english" id="englishRadio" onchange="setLanguage(1);">
+				English&nbsp;&nbsp;</label>
+				<label id="latin" class="radio-inline well-sm" data-toggle="tooltip" title="Opting this will display all or some of the questions in Español, depending on the availability of that question in Español!">
+					<input type="radio" name="latin" id="latinRadio" onchange="setLanguage(2);"/>
+				Español</label></div><br/>
+				<!-- <label id="readModeLabel1" class='radio-inline'><input type="radio" name="readWriteMode" id="readOnlyModeRadio"/>Read Through</label>
+				<label id="writeModeLabel1" class="radio-inline"><input type="radio" name="readWriteMode" id="testModeRadio" />Take Exam</label>-->
+				<div class='well well-sm'>
+				Choose Mode of Preparation :
+				<label id="readModeLabel1" class='radio-inline' data-toggle="tooltip" title="Opting  this will allow you to go through \neach question with correct answer pre-chosen for you. Good Luck!">
+					<input type="radio" name="readWriteMode" id="readOnlyModeRadio" onchange="setMode('readOnlyMode');">
+				Read Through&nbsp;&nbsp;</label>
+				<label id="writeModeLabel1" class="radio-inline well-sm" data-toggle="tooltip" title="Opting this will allow you to take the exam. Good Luck!">
+					<input type="radio" name="readWriteMode" id="testModeRadio" onchange="setMode('testMode');"/>
+				Take Exam</label></div>
+			</p>					
+		</ul>
+	</div>
+</body>
+</html>

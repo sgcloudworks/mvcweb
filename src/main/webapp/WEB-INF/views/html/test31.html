@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test 1</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+	var test3UserAnswersObject = {};
+	var test3CorrectAnswersObject = {};
+	
+	var prevUnansweredQuestionsDataObject = {};
+	//var prevUnansweredQuestionsData = {};
+	var prevUnansweredQNumber = -1;
+	
+	var nextUnansweredQuestionsDataObject = {};
+	var nextUnansweredQNumber = -1;
+	
+	var unAnsweredQuestionsDataObject = {};
+	
+	var wronglyAnsweredQsDataForReference = {};
+	var wronglyAnsweredQNumber = -1;
+	
+	var text3CounterTemp = test3Counter;
+	
+	
+	function getPreviousUnansweredQuestion() {
+		if(testMode){
+			var prevUnansweredQuestionData = test3UserAnswersObject[test3Counter];
+			if(!(prevUnansweredQuestionData)){
+				//prevUnansweredQuestionsData[test3Counter] = test3QuestionsData[test3Counter];
+				unAnsweredQuestionsDataObject[test3Counter] = test3QuestionsData[test3Counter];
+				//debugger;
+			}
+		}
+		//check if previous question is answered, if not call getPreviousQuestion, it should solve the purpose
+		//in order to do just check test3UserAnsweresObject[test3Counter-1] object, if the object is available call getPreviousQuestion
+		debugger;
+		if(testMode && test3Counter>0){
+			var prevQuestionNumber = test3Counter-1;
+			var prevQuestionAnsweredByUser = test3UserAnswersObject[prevQuestionNumber];
+			if( prevQuestionAnsweredByUser == null ){
+				getPreviousQuestion();
+			} else {
+				//get the current question index, that can be known from test3Counter				
+				//find the next index which is immediately below the current test3Counter.
+				//this can be found by traversing through unAnsweredQuestionsDataObject which is stored as index-unanswered question data
+				//once index is found increase the test3Counter by 1 and call the getPreviousQuestion() this should solve the purpose.
+				
+				/*
+					var a = [1, 2, 3, 4, 5];
+				var b = 4;
+				var result = Math.max.apply(Math, a.filter(function(x){return x < b}));
+				
+				alert(" result "+result);
+				*/
+				
+				
+				
+				//find the previously unanswered question and set test3Counter accordingly and call getPreviousQuestion() method
+				
+				var getPrevUnAnsweredKeys = Object.keys(unAnsweredQuestionsDataObject);
+				getPrevUnAnsweredKeys.sort();
+				var nextSmallIndex = Math.max.apply(Math, getPrevUnAnsweredKeys.filter(function(x){return x < test3Counter}));
+				
+				
+				var isAFiniteNumber = Number.isFinite(nextSmallIndex);
+				alert(" nextSmallIndex "+nextSmallIndex);
+				if(isAFiniteNumber) {
+					test3Counter = Number(nextSmallIndex)+1;
+					getPreviousQuestion();
+				} else {
+					$('#prevUnanswered').hide();
+				}
+								
+			}
+		}
+		
+		
+		
+	}
+	
+	function getPreviousQuestion() {
+		
+		
+		if(testMode){
+			var nextUnansweredQuestionsData = test3UserAnswersObject[test3Counter];
+			if(!(nextUnansweredQuestionsData)){
+				unAnsweredQuestionsDataObject[test3Counter] = test3QuestionsData[test3Counter];
+				//debugger;
+			}
+		}
+		if(testMode && Object.keys(unAnsweredQuestionsDataObject).length>0){
+			$('#nextUnanswered').show();
+		}
+		//debugger;
+		test3Counter = test3Counter-1;
+		var qId = test3Counter;		
+		var userChosenOption = test3UserAnswersObject[qId];
+		
+		if(userChosenOption == null){
+			
+			$("input[type=radio]").attr('disabled', false);
+			$('input:radio:checked').each(function() {
+				$('input:radio:checked')[0].checked = false;
+			});			
+		}
+		if(qId == 0){
+			$('#prev').hide();
+			$('#prevUnanswered').hide();
+			//need to see whether to show nextUnaswered button when showing the first question
+			//$('#nextUnanswered').hide();
+		}		
+		
+		if (qId >= 0) {
+			$('#next').show();
+			$('#progressBarTest3').hide();
+			if(testMode){
+				$("#submitTest3").show();
+ 		   	} if(readOnlyMode){
+ 			   $("#submitTest3").hide();
+ 		   	}
+ 		   var data = test3QuestionsData[qId];
+			renderingLogic(data,qId);
+			//Disable full page
+			/*$("body").on("contextmenu",function(e){
+				  return false;
+			  });*/			
+				
+		} 
+		if(testMode){
+			getTest3Scores();
+		}
+
+	}
+	
+	function getNextUnansweredQuestion(){
+		
+		if(testMode){
+			var prevUnansweredQuestionData = test3UserAnswersObject[test3Counter];
+			if(!(prevUnansweredQuestionData)){
+				//prevUnansweredQuestionsData[test3Counter] = test3QuestionsData[test3Counter];
+				unAnsweredQuestionsDataObject[test3Counter] = test3QuestionsData[test3Counter];
+				//debugger;
+			}
+		}
+		debugger;
+		//check if next question is answered, if not call getNextQuestion, it should solve the purpose
+		//in order to do just check test3UserAnsweresObject[test3Counter+1] object, if the object is available call getPreviousQuestion
+		if(testMode && test3Counter>=0 && test3Counter<test3QuestionsData.length){
+			var nextQuestionNumber = Number(test3Counter)+1;
+			var nextQuestionAnsweredByUser = test3UserAnswersObject[nextQuestionNumber];
+			if( nextQuestionAnsweredByUser == null ){
+				alert(" test3 Counter before calling getNextQuestion from getNextUnanswered "+test3Counter);
+				getNextQuestion();
+			} else {
+				//find the next unanswered question and set test3Counter accordingly and call getNextQuestion() method
+				
+				var nextUnAnsweredKeysList = Object.keys(unAnsweredQuestionsDataObject);
+				nextUnAnsweredKeysList.sort();
+				var nextBigIndex = Math.min.apply(Math, nextUnAnsweredKeysList.filter(function(x){return x > test3Counter}));
+				var isAFiniteNumber = Number.isFinite(nextBigIndex);
+				alert(" nextBigIndex "+nextBigIndex);
+				if(isAFiniteNumber) {
+					test3Counter = Number(nextBigIndex)-1;
+					getNextQuestion();	
+				} else {
+					$('#nextUnanswered').hide();
+				}
+			}
+		}	
+	}
+
+	function getNextQuestion() {
+		
+		if(testMode){
+			var prevUnansweredQuestionData = test3UserAnswersObject[test3Counter];
+			if(!(prevUnansweredQuestionData)){
+				//prevUnansweredQuestionsData[test3Counter] = test3QuestionsData[test3Counter];
+				unAnsweredQuestionsDataObject[test3Counter] = test3QuestionsData[test3Counter];
+				//debugger;
+			}
+		}
+		if(testMode && Object.keys(unAnsweredQuestionsDataObject).length>0){
+			$('#prevUnanswered').show();
+		}
+		//As we have some more questions, can show the previous button
+		$('#prev').show();
+		//Increament the counter to get the questions from test3QuestionsData
+		test3Counter = test3Counter + 1;
+		
+		//set counter to qId for later user
+		var qId =test3Counter;
+		
+		
+		
+		if(qId>=0 && qId < test3QuestionsData.length){
+			//following variable will be used to reset the radio buttons (enable and make them availabe for next choice)
+			var userChosenOption = test3UserAnswersObject[qId];
+			if(userChosenOption == null){
+				$("input[type=radio]").attr('disabled', false);
+				$('input:radio:checked').each(function() {
+					$('input:radio:checked')[0].checked = false;
+				});
+				
+			}
+			
+			//get the question data from available questions
+			var data = test3QuestionsData[qId];
+			//identifier being used to hide the next button and show the "End Exam" button
+			//can use data.lastQuestion == true too here. need to check
+			var lastQuestionIdentifier = test3QuestionsData.length - test3Counter;
+			if(lastQuestionIdentifier == 1){
+				alert(" last question reached need not show next and next unanswered buttons");
+				$('#next').hide();
+				$('#nextUnanswered').hide();
+				if(readOnlyMode){
+					$('#submitTest3').hide();
+				}if(testMode){
+					$('#submitTest3').show();
+				}
+			}
+			//call the common logic for rendering the UI.
+			renderingLogic(data,qId);
+					
+		} else {
+			//No more questions hence hiding.
+			$('#next').hide();
+		}
+		if(testMode){
+			//get the progress bar with relevant data
+			getTest3Scores();
+		}
+
+			
+			//Disable full page
+		   /* $("body").on("contextmenu",function(e){
+		        return false;
+		    });*/
+		
+	}
+	
+	function renderingLogic(data,qId){
+		//reset the info/success/danger informative section
+		$('#refSection').empty();
+		$("#refSection").removeClass('alert alert-danger glyphicon glyphicon-remove');
+		$("#refSection").removeClass('glyphicon glyphicon-thumbs-up alert alert-success');
+		$("#refSection").removeClass('glyphicon glyphicon-info-sign alert alert-info');
+		
+		//Do not delete the following is reseting the user choices, so need to use with caution
+		$('input:radio:checked').each(function() {
+			$('input:radio:checked')[0].checked = false;
+		});
+		
+		//empty the previous question
+		$('#question').empty();
+		var questionNumber = test3Counter+1;
+		//append the new question
+		$('#question').append('<br/><b>Question<br/></br> #'+ questionNumber+ "/" +test3QuestionsData.length + ")</b>&nbsp;&nbsp;"+data.question
+								+ '<br/> <br/> <b>Options</b>');
+		
+		// set the hidden varaibles
+		$('#qID').val(qId);
+		$('#correctAnswer').val(data.correctAnswer);
+		$('#referenceLink').val(data.referenceLink);
+		
+		//populate the options with text
+		jQuery.each(data.options, function(i, val) {
+			$("#radioLabel" + (i + 1)).text(val);
+		});
+		
+		//using the following to set the right values while navigating back and forth between prev and next questions
+		//this is for test mode need to verify in debug again to add the condition
+		var userChosenOption = test3UserAnswersObject[qId];
+		var correctAnswer = test3CorrectAnswersObject[qId];
+		if(!(userChosenOption == null )) {
+			
+			$('#'+userChosenOption).prop('checked',true);
+			$("input[type=radio]").attr('disabled', true);
+			
+			if(userChosenOption == correctAnswer ){
+				$("#refSection").addClass('glyphicon glyphicon-thumbs-up alert alert-success');
+				$("#refSection").append('<strong> Good Job!</strong>');
+			} else {
+				var referenceLinksArray = document.getElementById('referenceLink').value;
+				var referenceLinks = referenceLinksArray.split(",");
+				$("#refSection").addClass('glyphicon glyphicon-remove alert alert-danger ');
+				
+				$("#refSection").append('<b>Incorrect Option chosen earlier!To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+			}
+		}
+		
+		//this is being used in read only mode
+		var correctOptionId = Number(data.correctAnswer);
+	   	if(readOnlyMode){
+			$("input[type=radio]").attr('disabled', true);
+		   	$('#'+correctOptionId).prop('checked',true);
+		   
+		   	var referenceLinksArray = data.referenceLink;
+			var referenceLinks = referenceLinksArray.split(",");
+			$("#refSection").addClass('glyphicon glyphicon-info-sign alert alert-info');   						
+			$("#refSection").append('<b>To get more information on this please</b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+	   	}
+		
+	   	//need to see whether these are being used anymore
+		$('#optionsContainer').show();
+		$('.tab-content').show();
+
+	}
+	
+	
+function getTest3Scores(){
+		
+		var totalQuestions = test3QuestionsData.length;
+		var wrongAnswers = 0;
+		var correctAnswers = 0;
+		
+		//debugger;
+		for(var i in test3QuestionsData){
+			var userChosenOption = test3UserAnswersObject [i];
+			var correctAnswerOption = test3CorrectAnswersObject[i];
+			
+			if( (!(userChosenOption == null)) && (!(correctAnswerOption == null)) &&  userChosenOption == correctAnswerOption){
+				correctAnswers = correctAnswers + 1;
+			} if((!(userChosenOption == null)) && (!(correctAnswerOption == null))  && userChosenOption != correctAnswerOption){
+				wrongAnswers = wrongAnswers + 1;
+			}
+		}
+		
+		var answeredQuestionsNumbers = wrongAnswers+correctAnswers;
+		if(totalQuestions != (answeredQuestionsNumbers)){
+			
+			var unansweredQuestionsNumbers = totalQuestions - answeredQuestionsNumbers;
+			var successRate = (correctAnswers/totalQuestions)*100;
+			var failureRate = (wrongAnswers/totalQuestions)*100;			
+			var unansweredRate = ( (totalQuestions - (answeredQuestionsNumbers))/totalQuestions)*100;
+			
+			$('#successTest3')[0].innerHTML = correctAnswers+' out of '+totalQuestions+ ' correctly (i.e.'+successRate+'%!)';
+			$('#successTest3').css('width', successRate + "%");
+			
+			$('#incorrectTest3')[0].innerHTML = wrongAnswers+' out of '+totalQuestions+ ' incorrect (i.e.'+failureRate+'%)!';
+			$('#incorrectTest3').css('width', failureRate + "%");
+			
+			$('#unAnsweredTest3')[0].innerHTML = unansweredQuestionsNumbers +' out of '+ totalQuestions +' pending (i.e.'+unansweredRate+'%!)';
+			$('#unAnsweredTest3').css('width', unansweredRate + "%");
+								
+			$('#progressBarTest3').show();
+			
+		} else if(totalQuestions == correctAnswers){
+			$('#successTest3')[0].innerHTML = '&nbsp;<b><i>Congratulations!. You have cleared this test</i></b>';
+			//$('#successTest3').addClass('glyphicon glyphicon-thumbs-up');
+			$('#successTest3').css('width', 100 + "%");
+			
+			$('#prev').hide();
+			$('#next').hide();
+			$('#submitTest3').hide();
+			
+			$('#progressBarTest3').show();
+		} else {
+			
+			var successRate = (correctAnswers/totalQuestions)*100;
+			var failureRate = (wrongAnswers/totalQuestions)*100;
+			
+			$('#successTest3')[0].innerHTML = correctAnswers+' out of '+totalQuestions+ ' correct (i.e.'+successRate+'%!)';
+			$('#successTest3').css('width', successRate + "%");
+			
+			$('#incorrectTest3')[0].innerHTML = wrongAnswers+' out of '+totalQuestions+ ' incorrect (i.e.'+failureRate+'%!)';
+			$('#incorrectTest3').css('width', failureRate + "%");
+			
+			$('#unAnsweredTest3').css('width', 0 + "%");
+			
+			//$('#prev').hide();
+			//$('#next').hide();
+			$('#submitTest3').hide();
+			
+			$('#progressBarTest3').show();
+		}
+	}
+	
+
+	$('input[type=radio][name=optradio]').change(function() {
+		
+		$('input:radio').each(function() {
+			if ($(this).is(':checked')) {
+				$('#refSection').empty();
+				$("#refSection").removeClass('glyphicon glyphicon-remove alert alert-danger ');
+				$("#refSection").removeClass('glyphicon glyphicon-thumbs-up alert alert-success');
+				
+				var rightOption = Number(document.getElementById('correctAnswer').value) ;//+ 1;
+				var referenceLinksArray = document.getElementById('referenceLink').value;
+				var userOption = Number($(this)[0].id);
+				var questionNumber = test3Counter;
+				
+				test3UserAnswersObject [questionNumber] = userOption;
+				test3CorrectAnswersObject [questionNumber] = rightOption;
+				
+				if(rightOption == userOption){
+					$("#refSection").addClass('glyphicon glyphicon-thumbs-up alert alert-success');
+					$("#refSection").append('<strong> Good Job!</strong>');
+				} else {
+					wronglyAnsweredQsDataForReference[test3Counter] = test3QuestionsData[test3Counter];
+					
+					var referenceLinks = referenceLinksArray.split(",");					
+					$("#refSection").addClass('glyphicon glyphicon-remove alert alert-danger ');
+     			   $("#refSection").append('<b><em> Incorrect Option! To get more information on this please</em></b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+     			  
+				}
+				if(testMode){
+					$("input[type=radio]").attr('disabled', true);
+					delete unAnsweredQuestionsDataObject[test3Counter];
+					/*var lastQuestionIdentifier = test3QuestionsData.length - test3Counter;
+					if(lastQuestionIdentifier == 1){
+						getTest3Scores();
+					}*/
+				}
+				getTest3Scores();
+			}											
+		});
+	});
+
+	
+</script>
+
+</head>
+<body>
+	<ul>
+		<input id='qID' type="hidden" name="questionId" value="">
+		<input id='correctAnswer' type="hidden" name="correctAnswer" value="">
+		<input id='questionId' type="hidden" name="questionId" value="">
+		<input id='referenceLink' type='hidden' name='test1ReferenceLink' value=''>
+		
+
+
+  
+		<div id="content" class="homepagetabcontent">
+
+
+			<p id="question" class="small"></p>
+
+			<div id="optionsContainer" class="nav nav-justified" scroll='auto'>
+				<ul class="small">
+					<div class="radio well-sm" id="radio1">
+						<input type="radio" name="optradio" id="1" vertical-align='middle' /><label
+							id="radioLabel1"></label>
+						<div>
+							<div class="radio" id="radio2">
+								<input type="radio" name="optradio" id="2" /><label
+									id="radioLabel2"></label>
+							</div>
+							<div class="radio" id="radio3">
+								<input type="radio" name="optradio" id="3" /><label
+									id="radioLabel3"></label>
+							</div>
+							<div class="radio" id="radio4">
+								<input type="radio" name="optradio" id="4" /><label
+									id="radioLabel4"></label>
+							</div>
+						</div>
+					</div>
+				</ul>
+			</div>
+			<div id="refSection">
+			</div>
+			<ul class="pager">
+			<li><button type="button" class="btn btn-primary" id="prevUnanswered"
+						onclick="javascript:getPreviousUnansweredQuestion();">Previous Unanswered</button></li>
+				<li><button type="button" class="btn btn-primary" id="prev"
+						onclick="javascript:getPreviousQuestion();">Previous</button></li>
+				<li><button type="button" class="btn btn-primary" id="next"
+						onclick="javascript:getNextQuestion();">Next</button></li>
+				<li><button type="button" class="btn btn-primary" id="nextUnanswered"
+					onclick="javascript:getNextUnansweredQuestion();">Next Unanswered</button></li>
+				<li><button type="button" class="btn btn-primary" id="submitTest3"
+						onclick="javascript:getTest3Scores();">End Exam</button></li>
+			</ul>
+			<div class="progress" id='progressBarTest3'>
+    			<div class="progress-bar progress-bar-success" role="progressbar" style="width:40%" id="successTest3">
+      				Correct 
+    			</div>
+    			<div class="progress-bar progress-bar-warning" role="progressbar" style="width:30%" id="unAnsweredTest3">
+      				Unanswered
+			    </div>
+			    <div class="progress-bar progress-bar-danger" role="progressbar" style="width:30%" id="incorrectTest3">
+			      Incorrect
+			    </div>
+			</div>
+		</div>
+		
+			</ul>
+</body>
+</html>

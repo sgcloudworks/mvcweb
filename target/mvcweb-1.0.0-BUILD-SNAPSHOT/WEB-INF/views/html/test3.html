@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prep At Home</title>
+<!-- <link rel="shortcut icon" href="/mvcweb/resoures/prepathome.png" />-->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+
+<script type="text/javascript">
+	//var test1UserAnswers = [];
+	//var test1CorrectAnswers = [];
+	var test3UserAnswersObject = {};
+	var test3CorrectAnswersObject = {};
+	
+
+	$('input[type=radio][name=optradio]').change(function() {
+		$('input:radio').each(function() {
+			if ($(this).is(':checked')) {
+				
+				$('#refSection').empty();
+				$("#refSection").removeClass('glyphicon glyphicon-remove alert alert-danger ');
+				$("#refSection").removeClass('glyphicon glyphicon-thumbs-up alert alert-success');
+				
+				var rightOption = Number(document.getElementById('correctAnswer').value) ;//+ 1;
+				var referenceLinksArray = document.getElementById('referenceLink').value;
+				var userOption = Number($(this)[0].id);
+				var questionNumber = document.getElementById('qID').value;
+				
+				test3UserAnswersObject [questionNumber] = userOption;
+				test3CorrectAnswersObject [questionNumber] = rightOption;				
+				
+				
+				if(rightOption == userOption){
+					$("#refSection").addClass('glyphicon glyphicon-thumbs-up alert alert-success');
+					$("#refSection").append('<strong> Good Job!</strong>');
+				} else {
+					var referenceLinks = referenceLinksArray.split(",");
+					$("#refSection").addClass('glyphicon glyphicon-remove alert alert-danger ');
+     			   $("#refSection").append('<b><em> Incorrect Option! To get more information on this please</em></b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+     			  
+				}
+				if(testMode){
+					$("input[type=radio]").attr('disabled', true);
+				}
+				
+				/*var rightOption = Number(document.getElementById('correctAnswer').value) ;//+ 1;
+				var userOption = Number($(this)[0].id);
+				var questionNumber = document.getElementById('qID').value; 
+				//test1UserAnswers.push("T1_"+questionNumber+"Q_"+userOption);
+				//test1CorrectAnswers.push(questionNumber+"Q_"+rightOption);
+				test3UserAnswersObject [questionNumber] = userOption;
+				test3CorrectAnswersObject [questionNumber] = rightOption;
+				
+				if(rightOption == userOption){
+					$("#refSection").addClass('glyphicon glyphicon-thumbs-up alert alert-success');
+					$("#refSection").append('<strong> Good Job!</strong>');
+				} else {
+					var referenceLinks = referenceLinksArray.split(",");
+					$("#refSection").addClass('glyphicon glyphicon-remove alert alert-danger ');
+     			   $("#refSection").append('<b><em> Incorrect Option! To get more information on this please</em></b><mark> <u><a target="_blank" href="/mvcweb/resources/' + referenceLinks[0] + '.pdf">' + referenceLinks[1] + '</a></u></mark>');
+     			  
+				}*/
+			}
+											
+		});
+	});
+	function getPreviousQuestion() {
+		//Do not delete the following is reseting the user choices, so need to use with caution		
+		$('input:radio:checked').each(function() {
+			$('input:radio:checked')[0].checked=false;
+		});
+		//set the previouslt chosen option by the user for this question
+
+		var qId = Number(document.getElementById('qID').value) - 1;
+		if (qId > 0) {
+			$.get("http://localhost:8080/mvcweb/getQuestionFromTestId/3/"+ qId, function(data) {
+				$('#question').empty();
+				$('#question').append('<b>Question</b>'+ data.questionId + "Q) " + data.question
+										+ '<b>Options</b>');
+				$('#qID').val(data.questionId);
+				$('#correctAnswer').val(data.correctAnswer);
+				jQuery.each(data.options, function(i, val) {
+					$("#radioLabel" + (i + 1)).text(val);
+				});
+				//set prevoisuly set user option
+				var userChosenOption = test3UserAnswersObject[data.questionId];
+				if(!(userChosenOption == null )) {
+					$('#'+userChosenOption).prop('checked',true);
+				}
+				$('#optionsContainer').show();
+				$('.tab-content').show();
+
+				//Disable full page
+			    /*$("body").on("contextmenu",function(e){
+			        return false;
+			    });*/
+
+			});
+		}
+
+	}
+
+	function getNextQuestion() {
+		//Do not delete the following is reseting the user choices, so need to use with caution
+		$('input:radio:checked').each(function() {
+			$('input:radio:checked')[0].checked = false;
+		});
+		//set the previouslt chosen option by the user for this question
+		
+		var qId = Number(document.getElementById('qID').value) + 1;
+		$.get("http://localhost:8080/mvcweb/getQuestionFromTestId/3/"+ qId, function(data) {
+			$('#question').empty();
+			$('#question').append('<br/><b>Question</b><br/></br> '+ data.questionId + "Q) " +  data.question
+									+ '<br/> <br/> <b>Options</b>');
+			$('#qID').val(data.questionId);
+			$('#correctAnswer').val(data.correctAnswer);
+			jQuery.each(data.options, function(i, val) {
+				$("#radioLabel" + (i + 1)).text(val);
+			});
+			var userChosenOption = test3
+			
+			
+			UserAnswersObject[data.questionId];
+			if(!(userChosenOption == null )) {
+				$('#'+userChosenOption).prop('checked',true);
+			}
+			$('#optionsContainer').show();
+			$('.tab-content').show();
+			
+			//Disable full page
+		   /* $("body").on("contextmenu",function(e){
+		        return false;
+		    });*/
+		});
+	}
+</script>
+	        
+</head>
+
+<body>
+	<ul>
+		<input id='qID' type="hidden" name="questionId" value="">
+		<input id='correctAnswer' type="hidden" name="correctAnswer" value="">
+		<input id='questionId' type="hidden" name="questionId" value="">
+		<input id='referenceLink' type='hidden' name='test1ReferenceLink'
+			value=''>
+		<div id="content" class="homepagetabcontent">
+
+
+			<p id="question" class="small"></p>
+
+			<div id="optionsContainer" class="nav nav-justified">
+				<ul class="small">
+					<div class="radio" id="radio1">
+						<input type="radio" name="optradio" id="1" vertical-align='middle' /><label
+							id="radioLabel1"></label>
+						<div>
+							<div class="radio" id="radio2">
+								<input type="radio" name="optradio" id="2" /><label
+									id="radioLabel2"></label>
+							</div>
+							<div class="radio" id="radio3">
+								<input type="radio" name="optradio" id="3" /><label
+									id="radioLabel3"></label>
+							</div>
+							<div class="radio" id="radio4">
+								<input type="radio" name="optradio" id="4" /><label
+									id="radioLabel4"></label>
+							</div>
+						</div>
+					</div>
+				</ul>
+			</div>
+			<div id="refSection">
+			</div>
+			<ul class="pager">
+				<li><button type="button" class="btn btn-primary"
+						onclick="javascript:getPreviousQuestion();">Previous</button></li>
+				<li><button type="button" class="btn btn-primary"
+						onclick="javascript:getNextQuestion();">Next</button></li>
+			</ul>
+		</div>
+	</ul>
+</body>
+</html>

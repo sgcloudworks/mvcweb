@@ -1,0 +1,70 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+
+  alert("homePage var vlue readMode = "+readOnlyMode);
+  alert("homePage var vlue testModes = "+testMode);
+  if(readOnlyMode){
+	  $('#readOnlyModeRadio').prop('checked',true);
+	  $('#testModeRadio').prop('checked',false);
+  }
+  if(testMode){
+	  $('#testModeRadio').prop('checked',true);
+	  $('#readOnlyModeRadio').prop('checked',false);
+  }
+  $('input[type=radio][name=readWriteMode]').change(function() {
+		debugger;
+		$('input:radio').each(function() {
+			if ($(this).is(':checked')) {
+				alert(" id "+$(this)[0].id);
+				var radioCheckedInHomePage = $(this)[0].id;
+				if(radioCheckedInHomePage == 'readOnlyModeRadio'){
+					readOnlyMode = true;
+					testMode = false;
+				}
+				if(radioCheckedInHomePage == 'testModeRadio'){
+					testMode = true;
+					readOnlyMode = false;
+				}
+			}
+		});
+		
+	});
+  
+/*$(document).ready(function () {
+    //Disable full page
+    $("body").on("contextmenu",function(e){
+        return false;
+    });*/
+    </script>
+  </head>
+  <body  data-spy="scroll" data-target="#homepagetabcontent" data-offset="20">
+  <ul>
+    </ul>
+  
+<div id="content" class="homepagetabcontent" data-spy="affix" >
+		
+		<h2>Prep At Home</h2>
+			<p class="text-primary">
+	 
+		 	<ul class="small">
+			  	<i>
+					<li>Prep At Home now brings you the advantage of preparing for the exam over the Internet.</li>
+					<li>It is now accessible through your phones to tablets to desktops.</li>
+					<li>Preparing for the exam is now at your finger tips everytime. </li>
+					<li> Each test can now be accessible at the click of a tab.</li>
+					<li>Happy learning and wishing you a great success!</li>
+				</i>
+<br>
+				<label id="readModeLabel1" class='radio-inline'><input type="radio" name="readWriteMode" id="readOnlyModeRadio"/>Read Through</label>
+				<label id="writeModeLabel1" class="radio-inline"><input type="radio" name="readWriteMode" id="testModeRadio" />Take Exam</label>
+			</p>					
+		</ul>
+		
+	</div>
+</body>
+</html>
